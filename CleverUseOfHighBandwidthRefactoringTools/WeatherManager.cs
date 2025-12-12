@@ -26,8 +26,6 @@ namespace CleverUseOfHighBandwidthRefactoringTools;
 
 class WeatherService(string ApplicationKey)
 {
-  public string ApplicationKey { get; } = ApplicationKey;
-
   public async Task<CurrentWeather> GetCurrentWeather(Site Site)
   {
     using var Client = new HttpClient();
