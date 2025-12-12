@@ -24,7 +24,12 @@ using System.Net.Http.Json;
 
 namespace CleverUseOfHighBandwidthRefactoringTools;
 
-class WeatherService(string ApplicationKey)
+interface IWeatherService
+{
+  Task<CurrentWeather> GetCurrentWeather(Site Site);
+}
+
+class WeatherService(string ApplicationKey) : IWeatherService
 {
   public async Task<CurrentWeather> GetCurrentWeather(Site Site)
   {
