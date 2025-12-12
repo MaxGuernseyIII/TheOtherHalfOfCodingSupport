@@ -49,7 +49,7 @@ class WeatherService(string ApplicationKey) : IWeatherService
   }
 }
 
-class WeatherManager(string Key, WeatherService WeatherService)
+class WeatherManager(string Key, IWeatherService WeatherService)
 {
   public async Task Poll(Site Site)
   {
