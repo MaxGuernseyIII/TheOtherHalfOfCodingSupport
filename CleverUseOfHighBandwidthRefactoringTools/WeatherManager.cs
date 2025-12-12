@@ -29,19 +29,7 @@ class WeatherManager(string Key)
   public async Task Poll(Site Site)
   {
     var ApplicationKey = Key;
-    using var Client = new HttpClient();
-    using var Response = await Client.GetAsync(
-      $"http://api.weatherstack.com/current" +
-      $"?access_key={ApplicationKey}" +
-      $"&query={Site.Zip}" +
-      $"&units=f");
-
-    Response.EnsureSuccessStatusCode();
-
-    var WeatherResponse =
-      (await Response.Content.ReadFromJsonAsync<WeatherResponse>())!;
-
-    var CurrentWeather = WeatherResponse.Current;
+    var CurrentWeather = await GetCurrentWeather(Site, ApplicationKey);
     var Temp = CurrentWeather.Temperature;
 
     switch (Temp)
@@ -63,5 +51,23 @@ class WeatherManager(string Key)
         await Site.AllClear();
         break;
     }
+  }
+
+  static async Task<CurrentWeather> GetCurrentWeather(Site Site, string ApplicationKey)
+  {
+    using var Client = new HttpClient();
+    using var Response = await Client.GetAsync(
+      $"http://api.weatherstack.com/current" +
+      $"?access_key={ApplicationKey}" +
+      $"&query={Site.Zip}" +
+      $"&units=f");
+
+    Response.EnsureSuccessStatusCode();
+
+    var WeatherResponse =
+      (await Response.Content.ReadFromJsonAsync<WeatherResponse>())!;
+
+    var CurrentWeather = WeatherResponse.Current;
+    return CurrentWeather;
   }
 }
