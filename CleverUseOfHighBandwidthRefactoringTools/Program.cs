@@ -44,7 +44,7 @@ Console.WriteLine("""
                   """);
 
 var Key = Config["WeatherStack:AppKey"] ?? throw new ApplicationException("Missing a key. Get one from weatherstack.com");
-var Service = new WeatherManager(Key);
+var Service = new WeatherManager(Key, new WeatherService(ApplicationKey));
 
 var MyLocation = new Site("89138");
 

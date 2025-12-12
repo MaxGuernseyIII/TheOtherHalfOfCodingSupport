@@ -49,12 +49,12 @@ class WeatherService(string ApplicationKey) : IWeatherService
   }
 }
 
-class WeatherManager(string Key)
+class WeatherManager(string Key, WeatherService WeatherService)
 {
   public async Task Poll(Site Site)
   {
     var ApplicationKey = Key;
-    var CurrentWeather = await new WeatherService(ApplicationKey).GetCurrentWeather(Site);
+    var CurrentWeather = await WeatherService.GetCurrentWeather(Site);
     var Temp = CurrentWeather.Temperature;
 
     switch (Temp)
