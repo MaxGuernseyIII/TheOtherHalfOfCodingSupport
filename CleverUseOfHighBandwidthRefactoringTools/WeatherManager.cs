@@ -27,6 +27,23 @@ namespace CleverUseOfHighBandwidthRefactoringTools;
 class WeatherService(string ApplicationKey)
 {
   public string ApplicationKey { get; } = ApplicationKey;
+
+  public async Task<CurrentWeather> GetCurrentWeather(Site Site)
+  {
+    using var Client = new HttpClient();
+    using var Response = await Client.GetAsync(
+      $"http://api.weatherstack.com/current" +
+      $"?access_key={ApplicationKey}" +
+      $"&query={Site.Zip}" +
+      $"&units=f");
+
+    Response.EnsureSuccessStatusCode();
+
+    var WeatherResponse =
+      (await Response.Content.ReadFromJsonAsync<WeatherResponse>())!;
+
+    return WeatherResponse.Current;
+  }
 }
 
 class WeatherManager(string Key)
@@ -34,7 +51,7 @@ class WeatherManager(string Key)
   public async Task Poll(Site Site)
   {
     var ApplicationKey = Key;
-    var CurrentWeather = await GetCurrentWeather(Site, new WeatherService(ApplicationKey));
+    var CurrentWeather = await new WeatherService(ApplicationKey).GetCurrentWeather(Site);
     var Temp = CurrentWeather.Temperature;
 
     switch (Temp)
@@ -56,22 +73,5 @@ class WeatherManager(string Key)
         await Site.AllClear();
         break;
     }
-  }
-
-  static async Task<CurrentWeather> GetCurrentWeather(Site Site, WeatherService WeatherService)
-  {
-    using var Client = new HttpClient();
-    using var Response = await Client.GetAsync(
-      $"http://api.weatherstack.com/current" +
-      $"?access_key={WeatherService.ApplicationKey}" +
-      $"&query={Site.Zip}" +
-      $"&units=f");
-
-    Response.EnsureSuccessStatusCode();
-
-    var WeatherResponse =
-      (await Response.Content.ReadFromJsonAsync<WeatherResponse>())!;
-
-    return WeatherResponse.Current;
   }
 }
