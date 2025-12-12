@@ -53,7 +53,6 @@ class WeatherManager(string Key, IWeatherService WeatherService)
 {
   public async Task Poll(Site Site)
   {
-    var ApplicationKey = Key;
     var CurrentWeather = await WeatherService.GetCurrentWeather(Site);
     var Temp = CurrentWeather.Temperature;
 
