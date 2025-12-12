@@ -1,6 +1,6 @@
 ﻿// MIT License
 // 
-// Copyright (c) 2025-2025 Hexagon Software LLC
+// Copyright (c) 2025-2025 Producore LLC
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,33 +20,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Net.Http.Json;
+
 namespace CleverUseOfHighBandwidthRefactoringTools;
 
-class WeatherManager(WeatherService WeatherService)
+class WeatherServiceImplementation(string ApplicationKey) : WeatherService
 {
-  public async Task Poll(Site Site)
+  public async Task<CurrentWeather> GetCurrentWeather(Site Site)
   {
-    var CurrentWeather = await WeatherService.GetCurrentWeather(Site);
-    var Temp = CurrentWeather.Temperature;
+    using var Client = new HttpClient();
+    using var Response = await Client.GetAsync(
+      $"http://api.weatherstack.com/current" +
+      $"?access_key={ApplicationKey}" +
+      $"&query={Site.Zip}" +
+      $"&units=f");
 
-    switch (Temp)
-    {
-      case < 55:
-        await Site.ActivateEmergencyHeating();
-        await Site.AlertEmergencyConditions();
-        break;
-      case > 85:
-        await Site.ActivateEmergencyCooling();
-        await Site.AlertEmergencyConditions();
-        break;
-      default:
-        if (Site.IsInEmergencyState)
-        {
-          await Site.DeactivateEmergencyCooling();
-          await Site.DeactivateEmergencyHeating();
-        }
-        await Site.AllClear();
-        break;
-    }
+    Response.EnsureSuccessStatusCode();
+
+    var WeatherResponse =
+      (await Response.Content.ReadFromJsonAsync<WeatherResponse>())!;
+
+    return WeatherResponse.Current;
   }
 }
