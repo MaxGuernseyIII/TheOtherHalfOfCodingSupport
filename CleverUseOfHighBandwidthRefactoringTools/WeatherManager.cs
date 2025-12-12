@@ -60,11 +60,10 @@ class WeatherManager(string Key)
 
   static async Task<CurrentWeather> GetCurrentWeather(Site Site, WeatherService WeatherService)
   {
-    var ApplicationKey = WeatherService.ApplicationKey;
     using var Client = new HttpClient();
     using var Response = await Client.GetAsync(
       $"http://api.weatherstack.com/current" +
-      $"?access_key={ApplicationKey}" +
+      $"?access_key={WeatherService.ApplicationKey}" +
       $"&query={Site.Zip}" +
       $"&units=f");
 
