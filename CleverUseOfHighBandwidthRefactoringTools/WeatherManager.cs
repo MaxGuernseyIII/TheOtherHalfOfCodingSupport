@@ -24,11 +24,6 @@ using System.Net.Http.Json;
 
 namespace CleverUseOfHighBandwidthRefactoringTools;
 
-interface WeatherService
-{
-  Task<CurrentWeather> GetCurrentWeather(Site Site);
-}
-
 class WeatherServiceImplementation(string ApplicationKey) : WeatherService
 {
   public async Task<CurrentWeather> GetCurrentWeather(Site Site)
