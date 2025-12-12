@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Chapter_HighBandwidthRefactoringTools;
+using CleverUseOfHighBandwidthRefactoringTools;
 using Microsoft.Extensions.Configuration;
 
 var Config = new ConfigurationBuilder()

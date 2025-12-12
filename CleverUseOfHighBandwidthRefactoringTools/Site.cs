@@ -1,6 +1,6 @@
 ﻿// MIT License
 // 
-// Copyright (c) 2025-2025 Hexagon Software LLC
+// Copyright (c) 2025-2025 Producore LLC
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,48 +20,52 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Net.Http.Json;
-
 namespace CleverUseOfHighBandwidthRefactoringTools;
 
-class WeatherManager(string Key)
+class Site(string Zip)
 {
-  public async Task Poll(Site Site)
+  public bool IsInEmergencyState { get; private set; }
+  public string Zip { get; } = Zip;
+
+  public Task ActivateEmergencyHeating()
   {
-    var AppKey = Key;
-    using var Client = new HttpClient();
-    using var Response = await Client.GetAsync(
-      $"http://api.weatherstack.com/current" +
-      $"?access_key={AppKey}" +
-      $"&query={Site.Zip}" +
-      $"&units=f");
+    Console.WriteLine("Activating emergency heating!");
+    return Task.CompletedTask;
+  }
 
-    Response.EnsureSuccessStatusCode();
+  public Task ActivateEmergencyCooling()
+  {
+    Console.WriteLine("Activating emergency cooling!");
 
-    var WeatherResponse =
-      (await Response.Content.ReadFromJsonAsync<WeatherResponse>())!;
+    return Task.CompletedTask;
+  }
 
-    var CurrentWeather = WeatherResponse.Current;
-    var Temp = CurrentWeather.Temperature;
+  public Task DeactivateEmergencyHeating()
+  {
+    Console.WriteLine("Deactivating emergency heating!");
+    return Task.CompletedTask;
+  }
 
-    switch (Temp)
-    {
-      case < 55:
-        await Site.ActivateEmergencyHeating();
-        await Site.AlertEmergencyConditions();
-        break;
-      case > 85:
-        await Site.ActivateEmergencyCooling();
-        await Site.AlertEmergencyConditions();
-        break;
-      default:
-        if (Site.IsInEmergencyState)
-        {
-          await Site.DeactivateEmergencyCooling();
-          await Site.DeactivateEmergencyHeating();
-        }
-        await Site.AllClear();
-        break;
-    }
+  public Task DeactivateEmergencyCooling()
+  {
+    Console.WriteLine("Deactivating emergency cooling!");
+
+    return Task.CompletedTask;
+  }
+
+  public Task AlertEmergencyConditions()
+  {
+    Console.WriteLine("ALERT: Emergency conditions!");
+    IsInEmergencyState = true;
+
+    return Task.CompletedTask;
+  }
+
+  public Task AllClear()
+  {
+    Console.WriteLine("ALERT: All clear!");
+    IsInEmergencyState = false;
+
+    return Task.CompletedTask;
   }
 }
