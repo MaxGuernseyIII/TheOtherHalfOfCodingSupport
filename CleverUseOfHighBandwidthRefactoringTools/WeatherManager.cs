@@ -24,12 +24,12 @@ using System.Net.Http.Json;
 
 namespace CleverUseOfHighBandwidthRefactoringTools;
 
-interface IWeatherService
+interface WeatherService
 {
   Task<CurrentWeather> GetCurrentWeather(Site Site);
 }
 
-class WeatherServiceImplementation(string ApplicationKey) : IWeatherService
+class WeatherServiceImplementation(string ApplicationKey) : WeatherService
 {
   public async Task<CurrentWeather> GetCurrentWeather(Site Site)
   {
@@ -49,7 +49,7 @@ class WeatherServiceImplementation(string ApplicationKey) : IWeatherService
   }
 }
 
-class WeatherManager(IWeatherService WeatherService)
+class WeatherManager(WeatherService WeatherService)
 {
   public async Task Poll(Site Site)
   {
