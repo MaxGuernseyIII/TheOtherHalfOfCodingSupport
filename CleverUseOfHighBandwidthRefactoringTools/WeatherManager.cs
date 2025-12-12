@@ -29,7 +29,7 @@ interface IWeatherService
   Task<CurrentWeather> GetCurrentWeather(Site Site);
 }
 
-class WeatherService(string ApplicationKey) : IWeatherService
+class WeatherServiceImplementation(string ApplicationKey) : IWeatherService
 {
   public async Task<CurrentWeather> GetCurrentWeather(Site Site)
   {
