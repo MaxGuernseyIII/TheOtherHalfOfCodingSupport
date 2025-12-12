@@ -28,11 +28,10 @@ class WeatherManager(string Key)
 {
   public async Task Poll(Site Site)
   {
-    var AppKey = Key;
     using var Client = new HttpClient();
     using var Response = await Client.GetAsync(
       $"http://api.weatherstack.com/current" +
-      $"?access_key={AppKey}" +
+      $"?access_key={Key}" +
       $"&query={Site.Zip}" +
       $"&units=f");
 
@@ -41,8 +40,7 @@ class WeatherManager(string Key)
     var WeatherResponse =
       (await Response.Content.ReadFromJsonAsync<WeatherResponse>())!;
 
-    var CurrentWeather = WeatherResponse.Current;
-    var Temp = CurrentWeather.Temperature;
+    var Temp = WeatherResponse.Current.Temperature;
 
     switch (Temp)
     {
