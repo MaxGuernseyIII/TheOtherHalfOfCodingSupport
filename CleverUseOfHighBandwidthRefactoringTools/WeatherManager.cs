@@ -73,7 +73,6 @@ class WeatherManager(string Key)
     var WeatherResponse =
       (await Response.Content.ReadFromJsonAsync<WeatherResponse>())!;
 
-    var CurrentWeather = WeatherResponse.Current;
-    return CurrentWeather;
+    return WeatherResponse.Current;
   }
 }
