@@ -28,8 +28,8 @@ class WeatherManager(string Key)
 {
   public async Task Poll(Site Site)
   {
-    using var Client = new HttpClient();
     var ApplicationKey = Key;
+    using var Client = new HttpClient();
     using var Response = await Client.GetAsync(
       $"http://api.weatherstack.com/current" +
       $"?access_key={ApplicationKey}" +
