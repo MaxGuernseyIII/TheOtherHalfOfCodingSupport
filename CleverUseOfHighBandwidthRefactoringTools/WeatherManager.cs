@@ -24,12 +24,17 @@ using System.Net.Http.Json;
 
 namespace CleverUseOfHighBandwidthRefactoringTools;
 
+class WeatherService(string ApplicationKey)
+{
+  public string ApplicationKey { get; } = ApplicationKey;
+}
+
 class WeatherManager(string Key)
 {
   public async Task Poll(Site Site)
   {
     var ApplicationKey = Key;
-    var CurrentWeather = await GetCurrentWeather(Site, ApplicationKey);
+    var CurrentWeather = await GetCurrentWeather(Site, new WeatherService(ApplicationKey));
     var Temp = CurrentWeather.Temperature;
 
     switch (Temp)
@@ -53,8 +58,9 @@ class WeatherManager(string Key)
     }
   }
 
-  static async Task<CurrentWeather> GetCurrentWeather(Site Site, string ApplicationKey)
+  static async Task<CurrentWeather> GetCurrentWeather(Site Site, WeatherService WeatherService)
   {
+    var ApplicationKey = WeatherService.ApplicationKey;
     using var Client = new HttpClient();
     using var Response = await Client.GetAsync(
       $"http://api.weatherstack.com/current" +
